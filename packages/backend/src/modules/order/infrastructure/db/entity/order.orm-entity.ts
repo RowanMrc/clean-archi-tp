@@ -3,6 +3,16 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity('order')
 export default class Order {
+  confirmPaid() {
+    this.status = OrderStatusEnum.Paid;
+    this.updatedAt = new Date();
+  }
+
+  cancel() {
+    this.status = OrderStatusEnum.Canceled;
+    this.updatedAt = new Date();
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
