@@ -4,6 +4,8 @@ import { givenExistingDbConnection } from '@test/utils/fixture/shared/db-connect
 import DataSource from '@src/modules/database/config/typeorm.config';
 import request from 'supertest';
 import { cleanApp } from '@test/utils/fixture/shared/app/clean-app';
+import { orderBuilder } from '../order.e2e-builder';
+import { specifiedOrder } from '../order.e2e-utils';
 
 describe('Get Orders before specified date', () => {
   let app: NestExpressApplication;
@@ -24,12 +26,17 @@ describe('Get Orders before specified date', () => {
     // récupèrer la réponse HTTP
 
     const getAllOrdersResponse = await request(app.getHttpServer()).get('/api/orders/all-orders-before-date/23-09-2023');
-
-    // vérifier que la réponse a bien un status 200
     expect(getAllOrdersResponse.status).toBe(200);
-
-    // vérifier que la réponse a bien un body avec un tableau vide
     expect(getAllOrdersResponse.body).toEqual([]);
+
+    it('should return all orders created before the specified date',async () => {
+      const orderBuild = orderBuilder().build();
+      const order = await specifiedOrder(connection, orderBuild);
+      const orderResponse = await request(app.getHttpServer()).get('/api/orders/created-after/23-09-2023');
+      expect(orderResponse.status).toBe(200);
+      expect(orderResponse.body.length).toEqual(1);
+      expect(orderResponse.body[0].id).toEqual(order.id);
+  });
 
   });
 

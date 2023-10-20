@@ -16,7 +16,7 @@ export class SetOrderAsPaidService{
 
         return await this.saveOrder(Order);
     }
-    
+
     private async saveOrder(OrderToPersist: DeepPartial<Order>): Promise<Order> {
         try {
             const Order = await this.OrderRepository.persist<Order>(OrderToPersist);

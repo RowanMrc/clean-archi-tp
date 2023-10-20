@@ -63,8 +63,10 @@ export default class OrderController {
       }
 
       @Patch('/:orderId/cancel-order/')
-      async setOrderAsCancelled(@Param('orderId') orderId: string): Promise<Order[]> {
-        return await this.setOrderAsCancelledService.setOrderStatusCanceled(orderId);
+      async setOrderAsCancelled(@Param('orderId') orderId: string): Promise<OrderPresenter> {
+        const order =  await this.setOrderAsCancelledService.confirmPaidOrder(orderId);
+
+        return new OrderPresenter(order);
       }
 
       @Delete('/:orderId/delete-order/')
